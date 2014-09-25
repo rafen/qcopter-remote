@@ -30,6 +30,10 @@ class RemoteControl(Widget):
     reset_btn = ObjectProperty(None)
     stop_btn = ObjectProperty(None)
     clear_btn = ObjectProperty(None)
+    kp_text = ObjectProperty(None)
+    ki_text = ObjectProperty(None)
+    kd_text = ObjectProperty(None)
+    set_pid_btn = ObjectProperty(None)
 
     serial = None
     last_acc_command = ''
@@ -45,6 +49,7 @@ class RemoteControl(Widget):
         self.stop_btn.bind(on_release=lambda o: self.stop_command(o))
         self.reset_btn.bind(on_release=lambda o: self.reset())
         self.clear_btn.bind(on_release=lambda o: self.clear())
+        self.set_pid_btn.bind(on_release=lambda o: self.pid_command(o))
 
     def connect_serial(self):
         """
@@ -120,7 +125,7 @@ class RemoteControl(Widget):
         """
         index = self.term.text.rfind('acc:')
         if index >= 0:
-            value = self.term.text[index + 4:index + 7]
+            value = self.term.text[index + 4:index + 8]
             try:
                 self.acc_progress.value = int(value)
             except ValueError:
@@ -135,6 +140,19 @@ class RemoteControl(Widget):
         """
         self.term.text += 'Sending "y" to start \n'
         self.serial.write('y')
+
+    @check_serial
+    def pid_command(self, obj):
+        """
+        Send Kp, Ki and Kd values to serial PORT
+        :param obj:
+        :return:
+        """
+        command = "p:%s;i:%s;d:%s;" % (self.kp_text.text,
+                                       self.ki_text.text,
+                                       self.kd_text.text)
+        self.term.text += 'Sending new PID values \n'
+        self.serial.write(command)
 
     @check_serial
     def stop_command(self, obj):

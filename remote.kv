@@ -10,9 +10,13 @@
     reset_btn: reset
     clear_btn: clear
     stop_btn: stop
+    kp_text: kp
+    ki_text: ki
+    kd_text: kd
+    set_pid_btn: set_pid
 
     GridLayout:
-        rows: 2
+        rows: 4
         cols: 1 
         width: root.width
         height: root.height - 20
@@ -61,6 +65,30 @@
                 Button:
                     id: clear
                     text: "Clear"
+
+        GridLayout:
+            cols: 4
+            rows: 1
+            padding: 10
+            spacing: 10
+            size_hint_y: 0.25
+
+            TextInput:
+                id: kp
+                text: "10"
+
+            TextInput:
+                id: ki
+                text: "1"
+
+            TextInput:
+                id: kd
+                text: "3"
+
+            Button:
+                id: set_pid
+                text: "Set PID"
+
 
         TextInput:
             id: term_input
