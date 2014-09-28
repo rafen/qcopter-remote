@@ -4,6 +4,8 @@
 
     acc: acc_slider
     acc_progress: acc_progress
+    pitch: pitch_slider
+    pitch_progress: pitch_progress
     term: term_input
     start_btn: start
     connect_btn: connect
@@ -22,7 +24,7 @@
         height: root.height - 20
 
         GridLayout:
-            rows: 4
+            rows: 5
             cols: 2
             padding: 10
             spacing: 10
@@ -30,15 +32,24 @@
             Slider:
                 id: acc_slider
                 orientation: "horizontal"
-                max: 100
-                min: 0
+                max: 1000
+                min: -1000
                 value: 0
                 
-            ProgressBar:
+            Label:
                 id: acc_progress
-                max: 100
-                min: 0
+                text: "Aceleration: 1000 microseconds"
+
+            Slider:
+                id: pitch_slider
+                orientation: "horizontal"
+                max: 45
+                min: -45
                 value: 0
+
+            Label:
+                id: pitch_progress
+                text: "Emulate Pitch: 0"
 
             Button:
                 id: stop

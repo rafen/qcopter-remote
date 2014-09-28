@@ -24,6 +24,8 @@ def check_serial(f):
 class RemoteControl(Widget):
     acc = ObjectProperty(None)
     acc_progress = ObjectProperty(None)
+    pitch = ObjectProperty(None)
+    pitch_progress = ObjectProperty(None)
     term = ObjectProperty(None)
     start_btn = ObjectProperty(None)
     connect_btn = ObjectProperty(None)
@@ -37,6 +39,7 @@ class RemoteControl(Widget):
 
     serial = None
     last_acc_command = ''
+    last_pitch_command = ''
 
     def start(self):
         """
@@ -87,6 +90,7 @@ class RemoteControl(Widget):
         """
         self.acc_command()
         self.acc_progress_command()
+        self.pitch_command()
 
     def read_serial(self):
         """
@@ -112,11 +116,31 @@ class RemoteControl(Widget):
         acc = str(self.acc.value).split('.')[0]
         command = 'acc: %s;' % acc
         if self.last_acc_command != command:
+            # flush serial port
+            self.serial.flushInput()
+            # send command
             self.serial.write(command)
             # Update progress bar
-            self.acc_progress.value = self.acc.value
+            self.acc_progress.text = "acc: %s" % self.acc.value
             # Save last command sent
             self.last_acc_command = command
+
+    def pitch_command(self):
+        """
+        Send pitch command to serial PORT to emulate pitch
+        :return:
+        """
+        pitch = str(self.pitch.value).split('.')[0]
+        command = 'pitch:%s;' % pitch
+        if self.last_pitch_command != command:
+            # flush serial port
+            self.serial.flushInput()
+            # send command
+            self.serial.write(command)
+            # Update label
+            self.pitch_progress.text = "Emulate Pitch: %s" % pitch
+            # Save last command sent
+            self.last_pitch_command = command
 
     def acc_progress_command(self):
         """
@@ -125,7 +149,7 @@ class RemoteControl(Widget):
         """
         index = self.term.text.rfind('acc:')
         if index >= 0:
-            value = self.term.text[index + 4:index + 8]
+            value = self.term.text[index + 4:index + 9]
             try:
                 self.acc_progress.value = int(value)
             except ValueError:
@@ -148,7 +172,7 @@ class RemoteControl(Widget):
         :param obj:
         :return:
         """
-        command = "p:%s;i:%s;d:%s;" % (self.kp_text.text,
+        command = "pp:%s;pi:%s;pd:%s;" % (self.kp_text.text,
                                        self.ki_text.text,
                                        self.kd_text.text)
         self.term.text += 'Sending new PID values \n'
