@@ -162,8 +162,8 @@ class RemoteControl(Widget):
         :param obj:
         :return:
         """
-        self.term.text += 'Sending "y" to start \n'
-        self.serial.write('y')
+        self.term.text += 'Sending Start \n'
+        self.serial.write('start;')
 
     @check_serial
     def pid_command(self, obj):
